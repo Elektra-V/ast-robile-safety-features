@@ -1,0 +1,11 @@
+# IDEs
+.idea
+.vscode
+
+# Python related
+venv
+__pycache__
+
+# OS
+.DS_Store
+Thumbs.db
