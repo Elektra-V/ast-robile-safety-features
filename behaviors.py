@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import rclpy
+# import rclpy
 import py_trees as pt
 import py_trees_ros as ptr
 from geometry_msgs.msg import Twist
@@ -113,18 +113,14 @@ class BatteryStatus2bb(ptr.subscribers.ToBlackboard):
     def __init__(self, battery_voltage_topic_name: str="/battery_voltage",
                  name: str='Battery2BB',
                  threshold: float=30.0):
-        super().__init__(name=name,
-                         topic_name=battery_voltage_topic_name,
-                         topic_type=Float32,
-                         blackboard_variables={'battery': 'data'},
-                         initialise_variables={'battery': 100.0},
-                         clearing_policy=pt.common.ClearingPolicy.NEVER,  # to decide when data should be cleared/reset.
-                         qos_profile=ptr.utilities.qos_profile_unlatched())
+        super(BatteryStatus2bb, self).__init__(name=name,
+                                               topic_name=battery_voltage_topic_name,
+                                               topic_type=Float32,
+                                               blackboard_variables={'battery': 'data'},
+                                               initialise_variables={'battery': 100.0},
+                                               clearing_policy=pt.common.ClearingPolicy.NEVER,
+                                               qos_profile=ptr.utilities.qos_profile_unlatched())
         
-        
-
-        # TODO: initialise class variables
-        ### YOUR CODE HERE ###
         self.threshold = threshold
         self.blackboard.register_key(key='battery_low_warning', access=pt.common.Access.WRITE)
 
