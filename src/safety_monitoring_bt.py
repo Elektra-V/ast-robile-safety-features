@@ -65,35 +65,45 @@ def create_root() -> pt.behaviour.Behaviour:
     return root
 
 def main():
-    """Initialises and executes the behavior tree
+    """
+    This is the main function that initializes and executes the behavior tree.
+    It first initializes the ROS client library, then creates the root of the behavior tree.
+    The tree is then set up with a timeout of 30.0 seconds.
+    If the setup fails due to a timeout or a keyboard interrupt, the tree and the ROS client library are shut down and the program exits.
+    If the setup is successful, the tree starts ticking with a frequency of 100ms.
+    The function then enters a loop where it waits for callbacks from the ROS client library.
+    If a keyboard interrupt or an external shutdown exception occurs, the loop is broken.
+    Finally, the tree and the ROS client library are shut down.
     """
     rclpy.init(args=None)
 
-    root = create_root()
+    root = create_root() # Create the root of the behavior tree
     tree = ptr.trees.BehaviourTree(root=root, unicode_tree_debug=True)
 
     try:
         tree.setup(timeout=30.0)
     except ptr.exceptions.TimedOutError as e:
+        # If setup fails due to a timeout, log the error, shut down the tree and the ROS client library, and exit the program
         console.logerror(console.red + "failed to setup the tree, aborting [{}]".format(str(e)) + console.reset)
         tree.shutdown()
         rclpy.try_shutdown()
         sys.exit(1)
     except KeyboardInterrupt:
-        # user-initiated shutdown
+        # If setup is interrupted by the user, log the interruption, shut down the tree and the ROS client library, and exit the program
         console.logerror("tree setup interrupted")
         tree.shutdown()
         rclpy.try_shutdown()
         sys.exit(1)
     
     # frequency of ticks
-    tree.tick_tock(period_ms=100)    
+    tree.tick_tock(period_ms=100)  # Start the tree ticking with a frequency of 100ms  
 
     try:
         rclpy.spin(tree.node)
     except (KeyboardInterrupt, rclpy.executors.ExternalShutdownException):
         pass
     finally:
+        # Finally, shut down the tree and the ROS client library
         tree.shutdown()
         rclpy.try_shutdown()
 
