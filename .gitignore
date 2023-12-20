@@ -5,6 +5,7 @@
 # Python related
 venv
 __pycache__
+.pytest_cache
 
 # OS
 .DS_Store
