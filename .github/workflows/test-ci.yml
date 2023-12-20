@@ -1,0 +1,34 @@
+name: Python ROS2 CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    container:
+      image: ros:humble
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y python3-pip
+        pip install -U py_trees
+        pip install -U py_trees_ros
+        # Add any other dependencies you might have
+
+    - name: Run tests
+      run: pytest
